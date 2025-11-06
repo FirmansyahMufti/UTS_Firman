@@ -8,4 +8,5 @@ class CityModel extends Model
     protected $table = 'cities';
     protected $primaryKey = 'id';
     protected $allowedFields = ['nama_kota'];
+    protected $useTimestamps = true;
 }
