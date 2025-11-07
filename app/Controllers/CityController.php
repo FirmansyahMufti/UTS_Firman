@@ -8,7 +8,6 @@ use CodeIgniter\API\ResponseTrait;
 class CityController extends BaseController
 {
     use ResponseTrait;
-
     protected $model;
 
     public function __construct()
@@ -23,12 +22,12 @@ class CityController extends BaseController
         $perPage = max(1, (int) ($this->request->getGet('per_page') ?? 10));
         $offset  = ($page - 1) * $perPage;
 
-        $builder = $this->model->builder(); // query builder for cities
+        $builder = $this->model->builder();
         if ($keyword) {
             $builder->like('nama_kota', $keyword);
         }
 
-        $total = (int) $builder->countAllResults(false); // false: don't reset query
+        $total = (int) $builder->countAllResults(false);
         $rows  = $builder->limit($perPage, $offset)->get()->getResultArray();
 
         return $this->respond([
@@ -45,18 +44,12 @@ class CityController extends BaseController
 
     public function create()
     {
-        $raw = $this->request->getBody();
-        $input = json_decode($raw, true);
-        if (!is_array($input)) {
-            $input = ['nama_kota' => $this->request->getVar('nama_kota')];
-        }
-
+        $input = $this->request->getJSON(true);
         if (empty($input['nama_kota'])) {
             return $this->failValidationErrors('nama_kota is required');
         }
 
         $this->model->insert(['nama_kota' => $input['nama_kota']]);
-
         return $this->respondCreated(['message' => 'Kota berhasil ditambahkan']);
     }
 }
