@@ -1,66 +1,32 @@
 <?php
 
 namespace App\Controllers;
+
 use App\Models\UserModel;
-use CodeIgniter\Controller;
+use CodeIgniter\API\ResponseTrait;
 
-class AuthController extends Controller
+class AuthController extends BaseController
 {
-    public function register()
-    {
-        helper(['form']);
-        $rules = [
-            'username' => 'required|min_length[3]|max_length[20]',
-            'password' => 'required|min_length[5]|max_length[255]'
-        ];
-
-        if ($this->validate($rules)) {
-            $userModel = new UserModel();
-            $userModel->save([
-                'username' => $this->request->getVar('username'),
-                'password' => password_hash($this->request->getVar('password'), PASSWORD_DEFAULT)
-            ]);
-            return redirect()->to('/login')->with('success', 'Registrasi berhasil!');
-        } else {
-            return view('auth/register', [
-                'validation' => $this->validator
-            ]);
-        }
-    }
+    use ResponseTrait;
 
     public function login()
     {
-        helper(['form']);
-        $session = session();
+        helper('jwt');
         $userModel = new UserModel();
-        $username = $this->request->getVar('username');
-        $password = $this->request->getVar('password');
-        $data = $userModel->where('username', $username)->first();
 
-        if ($data) {
-            $pass = $data['password'];
-            if (password_verify($password, $pass)) {
-                $sessionData = [
-                    'id' => $data['id'],
-                    'username' => $data['username'],
-                    'logged_in' => TRUE
-                ];
-                $session->set($sessionData);
-                return redirect()->to('/dashboard');
-            } else {
-                $session->setFlashdata('error', 'Password salah!');
-                return redirect()->to('/login');
-            }
-        } else {
-            $session->setFlashdata('error', 'Username tidak ditemukan!');
-            return redirect()->to('/login');
+        $input = $this->request->getJSON(true);
+        $user = $userModel->getUserByUsername($input['username']);
+
+        if (!$user || !password_verify($input['password'], $user['password'])) {
+            return $this->respond(['message' => 'Username atau password salah'], 401);
         }
-    }
 
-    public function logout()
-    {
-        $session = session();
-        $session->destroy();
-        return redirect()->to('/login');
+        $token = createJWT($user);
+
+        return $this->respond([
+            'message' => 'Login sukses',
+            'token' => $token,
+            'expired_in' => '5 hari'
+        ]);
     }
 }

@@ -12,3 +12,4 @@ $routes->get('/register', 'AuthController::register');
 $routes->post('/register', 'AuthController::register');
 $routes->get('/logout', 'AuthController::logout');
 $routes->get('/dashboard', 'DashboardController::index');
+$routes->post('api/login', 'AuthController::login');
