@@ -14,7 +14,14 @@ class AuthController extends BaseController
         helper('jwt');
         $userModel = new UserModel();
 
-        $input = $this->request->getJSON(true);
+        // Gunakan getJSON() dengan validasi fallback agar gak error di editor
+        $json = $this->request->getJSON();
+        $input = json_decode(json_encode($json), true);
+
+        if (!$input || !isset($input['username'], $input['password'])) {
+            return $this->respond(['message' => 'Data login tidak lengkap'], 400);
+        }
+
         $user = $userModel->getUserByUsername($input['username']);
 
         if (!$user || !password_verify($input['password'], $user['password'])) {
