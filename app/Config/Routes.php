@@ -6,41 +6,24 @@ use CodeIgniter\Router\RouteCollection;
  * @var RouteCollection $routes
  */
 
-// ==========================
-// 🏠 DEFAULT ROUTE
-// ==========================
+// Default
 $routes->get('/', 'Home::index');
 
-// ==========================
-// 📊 DASHBOARD ROUTE
-// ==========================
-$routes->get('dashboard', 'DashboardController::index');
+// 🔐 Auth
+$routes->get('/login', 'AuthController::showLogin');
+$routes->post('/api/login', 'AuthController::login');
 
-// ==========================
-// 🔐 AUTHENTICATION ROUTES
-// ==========================
-$routes->group('api', ['namespace' => 'App\Controllers'], function ($routes) {
-    $routes->post('login', 'AuthController::login'); // Login JWT
-});
+// 📊 Dashboard
+$routes->get('/dashboard', 'DashboardController::index');
 
-// ==========================
-// 📍 MASTER DATA: CITY (Protected by JWT)
-// ==========================
-$routes->group('api/cities', [
-    'namespace' => 'App\Controllers',
-    'filter'    => 'auth' // 🔒 Proteksi pakai JWT AuthFilter
-], function ($routes) {
+// 📍 City (Protected by JWT)
+$routes->group('api/cities', ['filter' => 'auth'], function ($routes) {
     $routes->get('/', 'CityController::index');
     $routes->post('/', 'CityController::create');
 });
 
-// ==========================
-// 🧍 TRANSAKSI: SENSUS (Protected by JWT)
-// ==========================
-$routes->group('api/sensus', [
-    'namespace' => 'App\Controllers',
-    'filter'    => 'auth' // 🔒 Proteksi juga
-], function ($routes) {
+// 🧍 Sensus (Protected by JWT)
+$routes->group('api/sensus', ['filter' => 'auth'], function ($routes) {
     $routes->get('/', 'SensusController::index');
     $routes->post('/', 'SensusController::create');
     $routes->put('(:num)', 'SensusController::update/$1');
