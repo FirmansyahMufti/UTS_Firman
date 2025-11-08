@@ -6,10 +6,14 @@ use CodeIgniter\Router\RouteCollection;
  * @var RouteCollection $routes
  */
 
-// Default route
+// ==========================
+// 🏠 DEFAULT ROUTE
+// ==========================
 $routes->get('/', 'Home::index');
 
-// Dashboard route
+// ==========================
+// 📊 DASHBOARD ROUTE
+// ==========================
 $routes->get('dashboard', 'DashboardController::index');
 
 // ==========================
@@ -20,17 +24,23 @@ $routes->group('api', ['namespace' => 'App\Controllers'], function ($routes) {
 });
 
 // ==========================
-// 📍 MASTER DATA: CITY
+// 📍 MASTER DATA: CITY (Protected by JWT)
 // ==========================
-$routes->group('api/cities', ['namespace' => 'App\Controllers'], function ($routes) {
+$routes->group('api/cities', [
+    'namespace' => 'App\Controllers',
+    'filter'    => 'auth' // 🔒 Proteksi pakai JWT AuthFilter
+], function ($routes) {
     $routes->get('/', 'CityController::index');
     $routes->post('/', 'CityController::create');
 });
 
 // ==========================
-// 🧍 TRANSAKSI: SENSUS
+// 🧍 TRANSAKSI: SENSUS (Protected by JWT)
 // ==========================
-$routes->group('api/sensus', ['namespace' => 'App\Controllers'], function ($routes) {
+$routes->group('api/sensus', [
+    'namespace' => 'App\Controllers',
+    'filter'    => 'auth' // 🔒 Proteksi juga
+], function ($routes) {
     $routes->get('/', 'SensusController::index');
     $routes->post('/', 'SensusController::create');
     $routes->put('(:num)', 'SensusController::update/$1');
