@@ -66,3 +66,29 @@ Additionally, make sure that the following extensions are enabled in your PHP:
 - json (enabled by default - don't turn it off)
 - [mysqlnd](http://php.net/manual/en/mysqlnd.install.php) if you plan to use MySQL
 - [libcurl](http://php.net/manual/en/curl.requirements.php) if you plan to use the HTTP\CURLRequest library
+
+
+
+# 🧾 UTS - Sistem Sensus Penduduk (CodeIgniter 4)
+
+Project ini dibuat untuk memenuhi tugas **UTS Pemrograman Fullstack** oleh **Firmansyah**.
+
+## 📚 Deskripsi Singkat
+Aplikasi REST API berbasis CodeIgniter 4 untuk sistem sensus penduduk yang dilengkapi dengan:
+- Autentikasi menggunakan **JWT (JSON Web Token)**
+- CRUD data sensus (transaksi)
+- CRUD data kota (master)
+- Dashboard sederhana (Bootstrap)
+- Proteksi endpoint API dengan middleware AuthFilter
+
+## ⚙️ Teknologi yang Digunakan
+- PHP 8 + CodeIgniter 4
+- MySQL
+- Bootstrap 5
+- Git + GitHub (Version Control)
+- Postman (Testing API)
+
+## 🚀 Cara Menjalankan
+1. Clone repo ini ke folder `htdocs` di XAMPP:
+   ```bash
+   git clone https://github.com/FirmansyahMufti/UTS_Firman.git
