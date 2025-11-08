@@ -2,47 +2,92 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <title><?= esc($title ?? 'Dashboard - UTS Firman') ?></title>
-
-    <!-- Bootstrap 5 -->
-    <link 
-        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" 
-        rel="stylesheet" 
-        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" 
-        crossorigin="anonymous"
-    >
-
-    <!-- Font Awesome (icon) -->
-    <link 
-        rel="stylesheet" 
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" 
-        integrity="sha512-xh6VY7YwE7p1vO2o6+Pg5wT6X8V1Bx4NqvguT6kDfyO1rDHzrE1myUZclR3d7VQOnQvLQkV+3eE5+6oyZy8x3g==" 
-        crossorigin="anonymous" 
-        referrerpolicy="no-referrer"
-    />
-
-    <!-- Custom style (optional) -->
+    <title>Dashboard - Sistem Sensus Penduduk</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        body {
-            background-color: #f8f9fa;
-            font-family: "Poppins", sans-serif;
-        }
-        .navbar-brand {
-            font-weight: 600;
-        }
-        .card {
-            border-radius: 10px;
-        }
-        .card-header {
-            border-top-left-radius: 10px !important;
-            border-top-right-radius: 10px !important;
-        }
+        body { background-color: #f8f9fa; }
+        .card-stat { border-left: 5px solid #0d6efd; }
+        .navbar-brand { font-weight: bold; }
+        .table th { background-color: #0d6efd; color: white; }
     </style>
-
-    <!-- Axios (for API calls) -->
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-
 </head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
+  <div class="container">
+    <a class="navbar-brand" href="#">UTS Firman</a>
+    <div class="d-flex">
+      <a href="/logout" class="btn btn-outline-light btn-sm">Logout</a>
+    </div>
+  </div>
+</nav>
+
+<div class="container mt-5">
+    <div class="text-center mb-4">
+        <h3 class="fw-bold">Dashboard Sistem Sensus Penduduk</h3>
+        <p class="text-muted">Selamat datang di sistem pendataan sensus penduduk Indonesia</p>
+    </div>
+
+    <div class="row text-center mb-4">
+        <div class="col-md-6 mb-3">
+            <div class="card card-stat shadow-sm">
+                <div class="card-body">
+                    <h5 class="text-primary">Total Penduduk Terdaftar</h5>
+                    <h2><?= isset($totalSensus) ? $totalSensus : 0; ?></h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 mb-3">
+            <div class="card card-stat shadow-sm border-success">
+                <div class="card-body">
+                    <h5 class="text-success">Total Kota Terdaftar</h5>
+                    <h2><?= isset($totalCity) ? $totalCity : 0; ?></h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card shadow">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">📋 Data Sensus Terbaru</h5>
+        </div>
+        <div class="card-body">
+            <table class="table table-bordered table-hover align-middle">
+                <thead>
+                    <tr>
+                        <th>No</th>
+                        <th>Nama Penduduk</th>
+                        <th>Kota</th>
+                        <th>Alamat</th>
+                        <th>Jenis Kelamin</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php if (!empty($recentSensus)): ?>
+                        <?php $no = 1; foreach ($recentSensus as $row): ?>
+                            <tr>
+                                <td><?= $no++; ?></td>
+                                <td><?= esc($row['nama_penduduk']); ?></td>
+                                <td><?= esc($row['nama_kota']); ?></td>
+                                <td><?= esc($row['alamat']); ?></td>
+                                <td><?= esc($row['jenis_kelamin']); ?></td>
+                            </tr>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <tr>
+                            <td colspan="5" class="text-center text-muted">Belum ada data sensus</td>
+                        </tr>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<footer class="text-center mt-4 mb-3 text-muted small">
+    &copy; <?= date('Y'); ?> Sistem Sensus Penduduk - UTS Firman
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

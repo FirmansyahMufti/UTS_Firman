@@ -9,6 +9,9 @@ use CodeIgniter\Router\RouteCollection;
 // Default route
 $routes->get('/', 'Home::index');
 
+// Dashboard route
+$routes->get('dashboard', 'DashboardController::index');
+
 // ==========================
 // 🔐 AUTHENTICATION ROUTES
 // ==========================
@@ -20,16 +23,16 @@ $routes->group('api', ['namespace' => 'App\Controllers'], function ($routes) {
 // 📍 MASTER DATA: CITY
 // ==========================
 $routes->group('api/cities', ['namespace' => 'App\Controllers'], function ($routes) {
-    $routes->get('/', 'CityController::index');   // GET List kota (pagination & search)
-    $routes->post('/', 'CityController::create'); // POST tambah kota baru
+    $routes->get('/', 'CityController::index');
+    $routes->post('/', 'CityController::create');
 });
 
 // ==========================
 // 🧍 TRANSAKSI: SENSUS
 // ==========================
 $routes->group('api/sensus', ['namespace' => 'App\Controllers'], function ($routes) {
-    $routes->get('/', 'SensusController::index');     // GET List sensus (join city)
-    $routes->post('/', 'SensusController::create');   // POST tambah sensus
-    $routes->put('(:num)', 'SensusController::update/$1'); // PUT update sensus
-    $routes->delete('(:num)', 'SensusController::delete/$1'); // DELETE sensus
+    $routes->get('/', 'SensusController::index');
+    $routes->post('/', 'SensusController::create');
+    $routes->put('(:num)', 'SensusController::update/$1');
+    $routes->delete('(:num)', 'SensusController::delete/$1');
 });
