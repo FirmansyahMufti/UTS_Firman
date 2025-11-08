@@ -4,8 +4,9 @@ namespace App\Controllers;
 
 use App\Models\UserModel;
 use CodeIgniter\API\ResponseTrait;
+use CodeIgniter\Controller;
 
-class AuthController extends BaseController
+class AuthController extends Controller
 {
     use ResponseTrait;
 
@@ -21,15 +22,14 @@ class AuthController extends BaseController
         helper('jwt');
         $userModel = new UserModel();
 
-        // Ambil data JSON body
-        $json = $this->request->getBody();
-        $input = json_decode($json, true);
+        // Ambil data dari JSON body
+        $input = json_decode(file_get_contents('php://input'), true);
 
-        // Kalau bukan JSON, ambil dari POST biasa
+        // Kalau JSON kosong, ambil dari POST biasa
         if (!is_array($input)) {
             $input = [
-                'username' => $this->request->getVar('username'),
-                'password' => $this->request->getVar('password'),
+                'username' => $this->request->getPost('username'),
+                'password' => $this->request->getPost('password'),
             ];
         }
 
@@ -38,8 +38,9 @@ class AuthController extends BaseController
             return $this->respond(['message' => 'Username dan password wajib diisi'], 400);
         }
 
-        // Cari user
+        // Cek user di database
         $user = $userModel->where('username', $input['username'])->first();
+
         if (!$user) {
             return $this->respond(['message' => 'Username tidak ditemukan'], 401);
         }
