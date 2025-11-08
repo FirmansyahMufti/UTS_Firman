@@ -2,12 +2,14 @@
 
 namespace App\Filters;
 
+use CodeIgniter\Filters\FilterInterface;
 use CodeIgniter\HTTP\RequestInterface;
 use CodeIgniter\HTTP\ResponseInterface;
-use CodeIgniter\Filters\FilterInterface;
-use Firebase\JWT\ExpiredException;
-use Config\Services; // ⬅️ penting bro, ini yang bikin error ilang
+use Config\Services;
+use Firebase\JWT\JWT;
+use Firebase\JWT\Key;
 use Exception;
+use Firebase\JWT\ExpiredException;
 
 class AuthFilter implements FilterInterface
 {
@@ -22,16 +24,15 @@ class AuthFilter implements FilterInterface
         }
 
         $token = explode(' ', $header)[1] ?? null;
-
         if (!$token) {
             return Services::response()
-                ->setJSON(['message' => 'Format token tidak valid'])
+                ->setJSON(['message' => 'Format token salah'])
                 ->setStatusCode(401);
         }
 
         try {
-            helper('jwt');
-            verifyJWT($token);
+            $decoded = JWT::decode($token, new Key(getenv('JWT_SECRET_KEY'), 'HS256'));
+            $request->userData = $decoded->data;
         } catch (ExpiredException $e) {
             return Services::response()
                 ->setJSON(['message' => 'Token kadaluarsa'])
@@ -45,6 +46,6 @@ class AuthFilter implements FilterInterface
 
     public function after(RequestInterface $request, ResponseInterface $response, $arguments = null)
     {
-        // Tidak perlu diisi
+        // tidak digunakan
     }
 }
